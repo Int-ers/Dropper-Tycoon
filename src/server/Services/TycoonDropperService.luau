@@ -18,7 +18,7 @@ local TycoonDropperService = {
 
 function SetPlayerDropSchedule(Player : Player , PlayerData, Buttons)
     
-    local DropSchedule = {"Silver Tetramino of Accomplishment"}
+    local DropSchedule = {}
 
     for _,Stage in PlayerData.BoughtButtons do   
         for _, button : BasePart in Buttons do
@@ -30,7 +30,6 @@ function SetPlayerDropSchedule(Player : Player , PlayerData, Buttons)
             table.insert(DropSchedule, button.Name)
         end
     end
-
 
     TycoonDropperService.PlayersDropSchedule[Player] = DropSchedule
 end
@@ -63,12 +62,9 @@ function TycoonDropperService.BeginDropper(Player : Player)
 
     local function Dropper()
 
-
-
         while TycoonDropperService.PlayersDropSchedule[Player] do
             local sched = TycoonDropperService.PlayersDropSchedule[Player]
             for _, Item : Model in sched do
-                
                 if not DroppableObjects:FindFirstChild(Item) then
                     continue
                 end

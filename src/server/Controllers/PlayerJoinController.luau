@@ -5,6 +5,7 @@ local ServerScriptService = game:GetService("ServerScriptService")
 local Teams = game:GetService("Teams")
 local Net = require(ReplicatedStorage.Packages.Net)
 local DatabaseService = require(ServerScriptService["Main Server"].Services.DatabaseService)
+local SellingService = require(ServerScriptService["Main Server"].Services.SellingService)
 local TycoonDropperService = require(ServerScriptService["Main Server"].Services.TycoonDropperService)
 
 local TutorialRemote = Net:RemoteEvent("Initiate_Tutorial")
@@ -28,7 +29,7 @@ function CreateLeaderstats(Player : Player, Data : {Cash: number, Rebirths: numb
     Folder.Name = "leaderstats"
 
     local CashValue = Instance.new("IntValue")
-    CashValue.Name = "Cash"
+    CashValue.Name = "Tix"
     CashValue.Value = Data.Cash
 
     local RebirthsValue = Instance.new("IntValue")
@@ -98,6 +99,7 @@ function PlayerJoinController.PlayerJoined(Player : Player)
         end
     end
     TycoonDropperService.BeginDropper(Player)
+    SellingService.StartSellCycle(Player)
 end
 
 function PlayerJoinController.CompletedTutorial(Player : Player)

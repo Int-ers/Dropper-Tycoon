@@ -12,7 +12,7 @@ local ButtonTouchController = {}
 
 function ButtonTouchController.OnStart()
 
-    repeat wait(.1); print("waiting!"); print(Player.Team) until Player.Team ~= nil 
+    repeat task.wait(.1); print("waiting!"); print(Player.Team) until Player.Team ~= nil 
 
     local CurrentlyTagged = CollectionService:GetTagged(`{Player.Team.Name}_Buttons`)
     for _, button in CurrentlyTagged do

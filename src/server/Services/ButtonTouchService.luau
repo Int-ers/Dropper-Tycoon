@@ -28,9 +28,8 @@ function ButtonTouchService.ButtonTouched(Player : Player, TouchedButton : BaseP
     local Stage = TouchedButton:GetAttribute("Stage")
     if not Price or not Stage then return end
     local PlayerData = DatabaseService.GetPlayerData(Player)
-    print("rah")
+    
     if PlayerData.Cash >= Price then
-        print("enough cash!!")
         PlayerData.Cash -= Price
         table.insert(PlayerData.BoughtButtons, Stage)
         table.insert(TycoonDropperService.PlayersDropSchedule[Player] , TouchedButton.Name)

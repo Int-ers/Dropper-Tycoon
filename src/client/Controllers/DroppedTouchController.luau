@@ -6,17 +6,18 @@ local Janitor = require(ReplicatedStorage.Packages.Janitor)
 local Net = require(ReplicatedStorage.Packages.Net)
 local janitor = Janitor.new()
 
--- local TouchedEvent = Net:RemoteEvent("DroppedPartTouchEvent")
+local TouchedEvent = Net:RemoteEvent("DroppedPartTouchEvent")
 
 local DroppedTouchController = {}
 
 function DroppedTouchController.OnStart()
-    
+    task.wait(3)
     for _, team in Teams:GetChildren() do
         janitor:Add(CollectionService:GetInstanceAddedSignal(`{team.Name}_DroppedAssets`):Connect(DroppedTouchController.ObjectTagAdded))
 
 
         local DroppedParts = CollectionService:GetTagged(`{team.Name}_DroppedAssets`)
+        print(DroppedParts)
         for _, part : Model in DroppedParts do
             if not part or not part.PrimaryPart then
                 continue
@@ -49,7 +50,7 @@ function DroppedTouchController.PartTouched(Obj : Model, TouchedPart : BasePart)
         return
     end
 
-    -- TouchedEvent:FireServer(Obj)
+    TouchedEvent:FireServer(Obj)
 
 end
 
