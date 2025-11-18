@@ -1,0 +1,9 @@
+std="roblox"
+
+[rules]
+if_same_line = "allow"          # Allow multiple statements on same line
+unused_variable = "warn"        # Warn but don't error
+shadowing = "allow"             # Allow variable shadowing
+max_line_length = "allow"       # No line length limit
+multiple_statements = "allow"   # Another one related to statement chaining
+empty_if = "allow"
