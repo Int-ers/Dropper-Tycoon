@@ -22,20 +22,19 @@ function SellZoneController.OnStart()
     
     janitor:Add(SellingUI.OnClientEvent:Connect(SellZoneController.UpdateUI))
 
-    while not Player.Team or not Player do
-        task.wait(1)
-    end
+    repeat task.wait(1) until Tycoons:FindFirstChild(Player.Team.Name)
 
-    PlayerTycoon = Tycoons:FindFirstChild(Player.Team.Name)
+    PlayerTycoon = Tycoons[Player.Team.Name]
     Sellzone = PlayerTycoon.Scriptable__:WaitForChild("SellZone")
     UI = Sellzone:WaitForChild("Gui")
+    
     Template = UI.template
     HoldingFrame = UI.HoldingFrame
 
     janitor:Add(Sellzone.Touched:Connect(function(hit)
         local Player = Players:GetPlayerFromCharacter(hit.Parent)
         if not Player then return end 
-
+        
         SellingEvent:FireServer()
     end))
 end
@@ -49,9 +48,10 @@ function SellZoneController.UpdateUI(SellCycle : {[string] : number})
     end
     local isSome = false
     for name, amount in SellCycle do
+        if amount == 0 then continue end
         isSome = true
         local clone = Template:Clone()
-        clone.Text = `{name} x{amount + 1}`
+        clone.Text = `{name} x{amount}`
         clone.Parent = HoldingFrame
         clone.Visible = true
     end

@@ -1,10 +1,11 @@
 local Players = game:GetService("Players")
+Players.CharacterAutoLoads = false
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 local PlayerDataStructure = require(ReplicatedStorage.Shared.Databases.PlayerDataStructure)
 local ProfileStore = require(ServerScriptService.ServerPackages.ProfileStore)
 
-local PlayerStore = ProfileStore.New("PlayerStoreTesting22", PlayerDataStructure)
+local PlayerStore = ProfileStore.New("PlayerStoreTesting31", PlayerDataStructure)
 local Profiles: { [Player]: typeof(PlayerStore:StartSessionAsync()) } = {}
 
 local PlayerDataController = {}

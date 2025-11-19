@@ -22,6 +22,7 @@ if not Success then
 	end
 
 	for _, player: Player in pairs(Players:GetPlayers()) do
+		print("server error!")
 		kickPlayer(player)
 	end
 

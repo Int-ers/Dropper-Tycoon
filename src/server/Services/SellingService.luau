@@ -1,4 +1,3 @@
-local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 local Janitor = require(ReplicatedStorage.Packages.Janitor)
@@ -23,7 +22,6 @@ end
 
 
 local SellingService = {
-    PlayerSellingCache = {} :: {[Player] : {[string] : number}},
     PlayerSellCycleDELAY = {} :: {[Player]: number}
 }
 
@@ -58,19 +56,20 @@ function SellingService.AddToSellCycle(Player : Player)
         if not allow then return end
     end
 
-    if not SellingService.PlayerSellingCache[Player] then
-        SellingService.PlayerSellingCache[Player] = {}
+    if not PlayerData.PlayerSellingCache then
+        PlayerData.PlayerSellingCache = {}
     end
 
-    for name : string ,amount : number in PlayerData.PlayerSellingInventory do
-        if not SellingService.PlayerSellingCache[Player][name] then
-            SellingService.PlayerSellingCache[Player][name] = amount
-        else
-            local leftOver = (amount - SellingService.PlayerSellingCache[Player][name])
-            if leftOver <= 0 then return end
-            SellingService.PlayerSellingCache[Player][name] += leftOver
+    for name : string ,amount : number in PlayerData.PlayerInventory do
+        if not PlayerData.PlayerSellingCache[name] then
+            PlayerData.PlayerSellingCache[name] = amount
+            PlayerData.PlayerInventory[name] = 0
+            continue
         end
+        PlayerData.PlayerSellingCache[name] += amount
+        PlayerData.PlayerInventory[name] = nil
     end
+
 end
 
 function SellingService.StartSellCycle(Player : Player)
@@ -85,21 +84,20 @@ function SellingService.StartSellCycle(Player : Player)
             if PlayerData.Gamepasses["x2 Tix"] then
                 Multiplier = 2
             end
-            if not SellingService.PlayerSellingCache[Player] then continue end
-            for name, amount in SellingService.PlayerSellingCache[Player] do
+            if not PlayerData.PlayerSellingCache then continue end
+            for name, amount in PlayerData.PlayerSellingCache do
                 if amount == 0 then
-                    SellingService.PlayerSellingCache[Player][name] = nil 
+                    PlayerData.PlayerSellingCache[name] = nil 
                     continue
                 end
                 
                 local ObjValue = ObjectValues[name] 
-                if not ObjValue then warn("Object has no selling value!"); return end 
+                if not ObjValue then warn(`Object: {name} has no selling value!`); continue end 
                 PlayerData.Tix += (ObjValue * Multiplier)
-                SellingService.PlayerSellingCache[Player][name] -= 1
-                PlayerData.PlayerSellingInventory[name] -= 1
+                PlayerData.PlayerSellingCache[name] -= 1
                 SetCash(Player, PlayerData.Tix)
             end
-            SellingUI:FireClient(Player, SellingService.PlayerSellingCache[Player])
+            SellingUI:FireClient(Player, PlayerData.PlayerSellingCache)
         end
     end
 
@@ -108,15 +106,15 @@ function SellingService.StartSellCycle(Player : Player)
     else
         SellingService.PlayerSellCycleDELAY[Player] = .5; 
     end
-    SellingLoop()
+    janitor:Add(task.spawn(SellingLoop))
 end
 
-function SellingService:AddItemToSellInventory(Player : Player, ObjName) : boolean
+function SellingService:AddItemToInventory(Player : Player, ObjName) : boolean
     local PlayerData = DatabaseService.GetPlayerData(Player)
     if not PlayerData then return false end  
 
-    if not PlayerData.PlayerSellingInventory[ObjName] then PlayerData.PlayerSellingInventory[ObjName] = 1; return true end
-    PlayerData.PlayerSellingInventory[ObjName] += 1
+    if not PlayerData.PlayerInventory[ObjName] then PlayerData.PlayerInventory[ObjName] = 1; return true end
+    PlayerData.PlayerInventory[ObjName] += 1
     if PlayerData.Gamepasses["Auto Sell"] then
         SellingService.AddToSellCycle(Player)
     end

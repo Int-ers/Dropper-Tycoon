@@ -4,8 +4,9 @@ return {
 	Tix = 0 :: number,
 	Rebirths = 0 :: number,
 
-	BoughtButtons = {} :: {number}, -- 0 = default
-	PlayerSellingInventory = {} :: {[string] : number},
+	BoughtButtons = {} :: {number},
+	PlayerInventory = {} :: {[string] : number},
+	PlayerSellingCache = {} :: {[string] : number},
 
 	Gamepasses = {
 		["Auto Collect"] = false,

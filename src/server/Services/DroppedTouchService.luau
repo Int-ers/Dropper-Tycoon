@@ -1,7 +1,10 @@
+local Debris = game:GetService("Debris")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
 local SellingService = require(script.Parent.SellingService)
 local Janitor = require(ReplicatedStorage.Packages.Janitor)
 local janitor = Janitor.new()
+local Tycoons = Workspace:WaitForChild("Tycoons")
 local Net = require(ReplicatedStorage.Packages.Net)
 
 
@@ -16,19 +19,21 @@ function DroppedTouchService.OnStart()
 
 end
 
-function DroppedTouchService.PartTouched(Player : Player, Obj : Model)
-    
-    if not Player or not Player.Character then return end 
-    if not Obj or not Obj.PrimaryPart then return end
-    local HumanoidRoot = Player.Character:FindFirstChild("HumanoidRootPart")
-    if not HumanoidRoot then return end
+function DroppedTouchService.PartTouched(Player : Player, ItemId : string) 
+    if not Player or not Player.Team then return end
+    local PlayerTycoon = Tycoons:FindFirstChild(Player.Team.Name)
+    if not PlayerTycoon then return end
 
-    local Distance = (HumanoidRoot.Position - Obj.PrimaryPart.Position).Magnitude
-    if Distance > 10 then warn("Poss exploiter"); return end
+    local TycoonDroppablesFolder = PlayerTycoon.TycoonDroppables
+    if not TycoonDroppablesFolder then return end
 
-    local Success = SellingService:AddItemToSellInventory(Player , Obj.Name)
-    if Success then Obj:Destroy(); return end
-    return
+    for _, part : Model in TycoonDroppablesFolder:GetChildren() do
+        if part:GetAttribute("ItemId") == ItemId then
+            local Success = SellingService:AddItemToInventory(Player , part.Name)
+            if Success then Debris:AddItem(part, 0); return end
+        end
+    end
+
 end
 
 

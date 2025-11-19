@@ -1,3 +1,4 @@
+local HttpService = game:GetService("HttpService")
 local PhysicsService = game:GetService("PhysicsService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local DatabaseService = require(script.Parent.DatabaseService)
@@ -68,10 +69,18 @@ function TycoonDropperService.BeginDropper(Player : Player)
                 if not DroppableObjects:FindFirstChild(Item) then
                     continue
                 end
+                if #DroppablesFolder:GetChildren() >= 112 then task.wait(.1); continue end
                 local ItemClone : Model = DroppableObjects[Item]:Clone()
                 if not ItemClone or not ItemClone.PrimaryPart then return end
                 ItemClone:PivotTo(DropperPart.CFrame)
                 ItemClone.Parent = DroppablesFolder
+
+                ItemClone:SetAttribute("Server", true)
+                ItemClone:SetAttribute("ItemId", HttpService:GenerateGUID(false))
+                ItemClone.PrimaryPart.Anchored = true
+                ItemClone.PrimaryPart.CanCollide = false
+                ItemClone.PrimaryPart.Transparency = 1
+
                 
                 -- CollectionService:AddTag(ItemClone, `{playerTeamName}_DroppedAssets`)
                 ItemClone:AddTag(`{playerTeamName}_DroppedAssets`)
@@ -79,16 +88,18 @@ function TycoonDropperService.BeginDropper(Player : Player)
                     ItemClone:SetAttribute("Value" , ObjectValues[ItemClone.Name])
                 end
                 ItemClone.PrimaryPart.CollisionGroup = `{playerTeamName}_DroppedAssets`
+
+                task.wait(DROPPER_DEBOUNCE_TIME / #sched)
             end
-            task.wait(DROPPER_DEBOUNCE_TIME)
+            task.wait(.5)
         end
     end
 
     SetPlayerDropSchedule(Player, PlayerData, Buttons)
-    task.spawn(Dropper)
+    janitor:Add(task.spawn(Dropper))
 
-    PhysicsService:UnregisterCollisionGroup(`{playerTeamName}_DropperWalls`)
-    PhysicsService:UnregisterCollisionGroup(`{playerTeamName}_DroppedAssets`)
+    -- PhysicsService:UnregisterCollisionGroup(`{playerTeamName}_DropperWalls`)
+    -- PhysicsService:UnregisterCollisionGroup(`{playerTeamName}_DroppedAssets`)
 end
 
 

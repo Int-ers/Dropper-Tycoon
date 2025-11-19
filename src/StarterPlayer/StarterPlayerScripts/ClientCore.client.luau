@@ -18,6 +18,6 @@ if not Success then
 	function kickPlayer(player: Player)
 		player:Kick("An error occurred whilst starting the client. Error: \n" .. Response)
 	end
-
+	print("client error")
 	kickPlayer(LocalPlayer)
 end
