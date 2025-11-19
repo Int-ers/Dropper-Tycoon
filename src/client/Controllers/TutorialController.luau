@@ -122,7 +122,6 @@ function TutorialController.StartTutorial()
     end
 
     local function Stage3()
-        print("stage 3!")
         local PlayerTycoon = Tycoons:FindFirstChild(Player.Team.Name)
         if not PlayerTycoon then return end 
         local Root = Player.Character:FindFirstChild("HumanoidRootPart")
@@ -134,7 +133,6 @@ function TutorialController.StartTutorial()
         local running = true
         janitor:Add(sellZone.Touched:Connect(function(hit)
             if hit.Parent:FindFirstChild("Humanoid") then
-                print("detected touch of sellzone")
                 running = false
             end
         end))

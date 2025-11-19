@@ -1,7 +1,10 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 local ClientAudiosFolder = Workspace:WaitForChild("ClientAudios")
+local Net = require(ReplicatedStorage.Packages.Net)
 local AudiosDB = require(ReplicatedStorage.Shared.Databases.AudiosDB)
+
+local SoundEvent = Net:RemoteEvent("Sound_Event")
 
 function CreateAudio(Name, ID) : Sound
     local Sound = Instance.new("Sound")
@@ -20,9 +23,11 @@ local ClientAudioBridge = {
 }
 
 function ClientAudioBridge.OnStart()
-
     ClientAudioBridge.BackgroundMusic()
 
+    SoundEvent.OnClientEvent:Connect(function(Name)
+        ClientAudioBridge:PlayAudio(Name)
+    end)
 end
 
 function ClientAudioBridge:PlayAudio(Name)
