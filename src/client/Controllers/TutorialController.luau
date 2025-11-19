@@ -52,7 +52,7 @@ function TutorialController.StartTutorial()
         end
         
         while true do
-            wait(1)
+            task.wait(1)
             if not THEbutton then break end
             if THEbutton.Transparency == 1 then for _,x in BeamStuff do x:Destroy() end; break end
         end
@@ -67,6 +67,7 @@ function TutorialController.StartTutorial()
         local beamStuff
         local selectedDroppable
         local TycoonDroppables = PlayersTeamFolder:FindFirstChild("TycoonDroppables")
+        repeat task.wait(1) until #TycoonDroppables:GetChildren() > 0 
         for _, part : Model in TycoonDroppables:GetChildren() do
             beamStuff = CreateBeam(Player.Character.HumanoidRootPart, part.PrimaryPart)
             selectedDroppable = part
@@ -79,7 +80,7 @@ function TutorialController.StartTutorial()
             end
         end))
         while running do
-            wait(1)
+            task.wait(1)
         end
         for _, item in beamStuff do
             item:Destroy()
@@ -104,7 +105,7 @@ function TutorialController.StartTutorial()
 
         local beamStuff = CreateBeam(Root, sellZone)
         while running do
-            wait(1)
+            task.wait(1)
         end
         for _, item in beamStuff do
             item:Destroy()
