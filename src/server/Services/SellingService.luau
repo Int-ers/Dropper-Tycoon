@@ -11,6 +11,17 @@ local Tycoons = Workspace:WaitForChild("Tycoons")
 local SellingEvent = Net:RemoteEvent("SellingEvent")
 local SellingUI = Net:RemoteEvent("Update_SellingUI")
 
+function SetCash(player, value)
+    local leaderstats = player:FindFirstChild("leaderstats")
+    if leaderstats then
+        local stat = leaderstats:FindFirstChild("Tix")
+        if stat then
+            stat.Value = value
+        end
+    end
+end
+
+
 local SellingService = {
     PlayerSellingCache = {} :: {[Player] : {[string] : number}},
     PlayerSellCycleDELAY = {} :: {[Player]: number}
@@ -27,7 +38,7 @@ function SellingService.AddToSellCycle(Player : Player)
         local Root = Player.Character:FindFirstChild("HumanoidRootPart")
         if not Root then return end
 
-        local PlayerTycoon = Tycoons:FindFirstChild(Player.Team)
+        local PlayerTycoon = Tycoons:FindFirstChild(Player.Team.Name)
         if not PlayerTycoon then return end
         
         local SellZone = PlayerTycoon.Scriptable__:FindFirstChild("SellZone")
@@ -47,14 +58,17 @@ function SellingService.AddToSellCycle(Player : Player)
         if not allow then return end
     end
 
+    if not SellingService.PlayerSellingCache[Player] then
+        SellingService.PlayerSellingCache[Player] = {}
+    end
+
     for name : string ,amount : number in PlayerData.PlayerSellingInventory do
-        if SellingService.PlayerSellingCache[Player][name] then
+        if not SellingService.PlayerSellingCache[Player][name] then
+            SellingService.PlayerSellingCache[Player][name] = amount
+        else
             local leftOver = (amount - SellingService.PlayerSellingCache[Player][name])
-            print(leftOver)
             if leftOver <= 0 then return end
             SellingService.PlayerSellingCache[Player][name] += leftOver
-        else
-            SellingService.PlayerSellingCache[Player][name] = amount
         end
     end
 end
@@ -65,14 +79,13 @@ function SellingService.StartSellCycle(Player : Player)
     local PlayerData = DatabaseService.GetPlayerData(Player)
     if not PlayerData then return end 
 
-    local function SellingLoop()
-        
+    local function SellingLoop()    
         while task.wait(SellingService.PlayerSellCycleDELAY[Player]) do
             local Multiplier = 1
             if PlayerData.Gamepasses["x2 Tix"] then
                 Multiplier = 2
             end
-
+            if not SellingService.PlayerSellingCache[Player] then continue end
             for name, amount in SellingService.PlayerSellingCache[Player] do
                 if amount == 0 then
                     SellingService.PlayerSellingCache[Player][name] = nil 
@@ -84,8 +97,9 @@ function SellingService.StartSellCycle(Player : Player)
                 PlayerData.Tix += (ObjValue * Multiplier)
                 SellingService.PlayerSellingCache[Player][name] -= 1
                 PlayerData.PlayerSellingInventory[name] -= 1
+                SetCash(Player, PlayerData.Tix)
             end
-            SellingUI:FireClient(Player)
+            SellingUI:FireClient(Player, SellingService.PlayerSellingCache[Player])
         end
     end
 

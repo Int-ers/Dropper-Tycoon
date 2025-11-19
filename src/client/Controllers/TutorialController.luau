@@ -2,10 +2,13 @@ local CollectionService = game:GetService("CollectionService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
+local Janitor = require(ReplicatedStorage.Packages.Janitor)
+local janitor = Janitor.new()
 local Net = require(ReplicatedStorage.Packages.Net)
 local Player = Players.LocalPlayer
 local Tycoons = Workspace:WaitForChild("Tycoons")
 local TutorialRemote = Net:RemoteEvent("Initiate_Tutorial")
+local TutorialCompletion = Net:RemoteEvent("Completed_Tutorial")
 
 local TutorialController = {}
 
@@ -49,7 +52,7 @@ function TutorialController.StartTutorial()
         end
         
         while true do
-            wait(.1)
+            wait(1)
             if not THEbutton then break end
             if THEbutton.Transparency == 1 then for _,x in BeamStuff do x:Destroy() end; break end
         end
@@ -69,20 +72,50 @@ function TutorialController.StartTutorial()
             selectedDroppable = part
             break
         end
-        while true do
-            wait(.1)
-            if not beamStuff or not selectedDroppable then return end
+        local running = true
+        janitor:Add(selectedDroppable.PrimaryPart.Touched:Connect(function(hit)
+            if hit.parent:FindFirstChild("Humanoid") then
+                running = false
+            end
+        end))
+        while running do
+            wait(1)
+        end
+        for _, item in beamStuff do
+            item:Destroy()
         end
     end
 
     local function Stage3()
-        
+        local PlayerTycoon = Tycoons:FindFirstChild(Player.Team.Name)
+        if not PlayerTycoon then return end 
+        local Root = Player.Character:FindFirstChild("HumanoidRootPart")
+        if not Root then return end
 
+        local sellZone : BasePart = PlayerTycoon.Scriptable__:FindFirstChild("SellZone")
+        if not sellZone then return end
+
+        local running = true
+        janitor:Add(sellZone.Touched:Connect(function(hit)
+            if hit.Parent:FindFirstChild("Humanoid") then
+                running = false
+            end
+        end))
+
+        local beamStuff = CreateBeam(Root, sellZone)
+        while running do
+            wait(1)
+        end
+        for _, item in beamStuff do
+            item:Destroy()
+        end
 
     end
     Stage1()
     Stage2()
+    Stage3()
 
+    TutorialCompletion:FireServer()
 end
 
 return TutorialController

@@ -17,7 +17,7 @@ function DroppedTouchController.OnStart()
 
 
         local DroppedParts = CollectionService:GetTagged(`{team.Name}_DroppedAssets`)
-        print(DroppedParts)
+        
         for _, part : Model in DroppedParts do
             if not part or not part.PrimaryPart then
                 continue

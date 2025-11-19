@@ -23,14 +23,14 @@ function GetAvailableTeam()
     return false
 end
 
-function CreateLeaderstats(Player : Player, Data : {Cash: number, Rebirths: number, BoughtButtons: {number}})
+function CreateLeaderstats(Player : Player, Data : {Tix: number, Rebirths: number})
     
     local Folder = Instance.new("Folder")
     Folder.Name = "leaderstats"
 
     local CashValue = Instance.new("IntValue")
     CashValue.Name = "Tix"
-    CashValue.Value = Data.Cash
+    CashValue.Value = Data.Tix
 
     local RebirthsValue = Instance.new("IntValue")
     RebirthsValue.Name = "Rebirths"
