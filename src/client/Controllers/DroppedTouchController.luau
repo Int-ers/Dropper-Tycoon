@@ -7,6 +7,8 @@ local Workspace = game:GetService("Workspace")
 local ClientDuplicates = Workspace:WaitForChild("ClientDuplicates")
 local ClientObjects = ReplicatedStorage:WaitForChild("Objects")
 local Objects = ClientObjects:WaitForChild("DropperObjects")
+local Tycoons = workspace:WaitForChild("Tycoons")
+local DropperWalls
 local Janitor = require(ReplicatedStorage.Packages.Janitor)
 local Net = require(ReplicatedStorage.Packages.Net)
 local ClientAudioBridge = require(ReplicatedStorage["Main Client"].Bridges.ClientAudioBridge)
@@ -58,7 +60,10 @@ function DroppedTouchController.OnStart()
     janitor:Add(CollectionService:GetInstanceAddedSignal(`{Player.Team.Name}_DroppedAssets`):Connect(DroppedTouchController.ObjectTagAdded))
 
     repeat task.wait(.1); spawntimeout += 0.1; until #CollectionService:GetTagged(`{Player.Team.Name}_DroppedAssets`) > 0 or spawntimeout > 5
+
     local DroppedParts = CollectionService:GetTagged(`{Player.Team.Name}_DroppedAssets`)
+    local PlayerTycoon = Tycoons:FindFirstChild(Player.Team.Name)
+    if not PlayerTycoon then warn("No tycoon found"); else DropperWalls = PlayerTycoon.Scriptable__:FindFirstChild("DropperWalls") end
     
     for _, part : Model in DroppedParts do
         local timeout = 0
