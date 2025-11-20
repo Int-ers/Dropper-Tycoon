@@ -8,6 +8,7 @@ realm = "shared"
 Janitor = "howmanysmall/janitor@^1.17.0"
 Loader = "sleitnick/loader@2.0.0"
 Net = "sleitnick/net@0.2.0"
+numberformatutil = "bubshurb/numberformatutil@2.0.0"
 
 [server-dependencies]
 ProfileStore = "lm-loleris/profilestore@1.0.1"

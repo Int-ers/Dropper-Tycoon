@@ -3,9 +3,14 @@
 registry = "test"
 
 [[package]]
+name = "bubshurb/numberformatutil"
+version = "2.0.0"
+dependencies = []
+
+[[package]]
 name = "dbrac/dropper-tycoon"
 version = "0.1.0"
-dependencies = [["Janitor", "howmanysmall/janitor@1.18.3"], ["Loader", "sleitnick/loader@2.0.0"], ["Net", "sleitnick/net@0.2.0"], ["ProfileStore", "lm-loleris/profilestore@1.0.3"]]
+dependencies = [["Janitor", "howmanysmall/janitor@1.18.3"], ["Loader", "sleitnick/loader@2.0.0"], ["Net", "sleitnick/net@0.2.0"], ["numberformatutil", "bubshurb/numberformatutil@2.0.0"], ["ProfileStore", "lm-loleris/profilestore@1.0.3"]]
 
 [[package]]
 name = "evaera/promise"

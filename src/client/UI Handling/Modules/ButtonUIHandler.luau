@@ -3,6 +3,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Janitor = require(ReplicatedStorage.Packages.Janitor)
 local Net = require(ReplicatedStorage.Packages.Net)
+local numberformatutil = require(ReplicatedStorage.Packages.numberformatutil)
 local janitor = Janitor.new()
 local ButtonUI = ReplicatedStorage:WaitForChild("ButtonUI")
 local Player = Players.LocalPlayer
@@ -17,7 +18,7 @@ function CreateUI(Name : string, Price : number, robux : boolean?) : BillboardGu
 
     local NewUI = ButtonUI:Clone()
     NewUI.Frame.ItemName.Text = Name
-    NewUI.Frame.ItemPrice.Text = Price
+    NewUI.Frame.ItemPrice.Text = numberformatutil.suffix(Price)
 
     if robux then
         NewUI.Frame.ItemPrice.Text = `{Price} robux`
