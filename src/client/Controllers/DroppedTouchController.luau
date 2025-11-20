@@ -37,6 +37,13 @@ function CreateDuplicate(Name, ID, Position : CFrame) : Model?
 
     Clone.PrimaryPart:PivotTo(Position)
 
+    -- local function anchorOnceStopped()
+    --     repeat task.wait(2) until Clone.PrimaryPart.AssemblyLinearVelocity.Magnitude > 0.5
+    --     Clone.PrimaryPart.Anchored = true
+    -- end
+
+    -- janitor:Add(task.spawn(anchorOnceStopped))
+
     return Clone
 
 end

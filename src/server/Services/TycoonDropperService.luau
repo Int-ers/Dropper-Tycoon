@@ -1,5 +1,5 @@
 local HttpService = game:GetService("HttpService")
-local PhysicsService = game:GetService("PhysicsService")
+-- local PhysicsService = game:GetService("PhysicsService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local DatabaseService = require(script.Parent.DatabaseService)
 local Janitor = require(ReplicatedStorage.Packages.Janitor)
@@ -10,6 +10,22 @@ local DroppableObjects = FolderObjects:WaitForChild("DropperObjects")
 local janitor = Janitor.new()
 
 local DROPPER_DEBOUNCE_TIME = 5
+
+local function RandomPointInPart(part: BasePart)
+    local size = part.Size
+    local pos = part.Position
+
+    -- random offset inside bounds
+    local offset = Vector3.new(
+        (math.random() - 0.5) * size.X,
+        (math.random() - 0.5) * size.Y,
+        (math.random() - 0.5) * size.Z
+    )
+
+    -- convert offset to world space using CFrame
+    return part.CFrame:PointToWorldSpace(offset)
+end
+
 
 
 
@@ -50,16 +66,16 @@ function TycoonDropperService.BeginDropper(Player : Player)
     
     local DropperPart = PlayerTycoon.Scriptable__.DropperPart
     local DroppablesFolder = PlayerTycoon:FindFirstChild("TycoonDroppables")
-    local DropperWalls = PlayerTycoon.Scriptable__:FindFirstChild("DropperWalls")
+    -- local DropperWalls = PlayerTycoon.Scriptable__:FindFirstChild("DropperWalls")
     local Buttons = PlayerTycoon.Scriptable__.BUTTONS:GetChildren()
 
-    PhysicsService:RegisterCollisionGroup(`{playerTeamName}_DropperWalls`)
-    PhysicsService:RegisterCollisionGroup(`{playerTeamName}_DroppedAssets`)
-    for _,part : BasePart in DropperWalls:GetChildren() do
-        part.CollisionGroup = `{playerTeamName}_DropperWalls`
-    end
+    -- PhysicsService:RegisterCollisionGroup(`{playerTeamName}_DropperWalls`)
+    -- PhysicsService:RegisterCollisionGroup(`{playerTeamName}_DroppedAssets`)
+    -- for _,part : BasePart in DropperWalls:GetChildren() do
+    --     part.CollisionGroup = `{playerTeamName}_DropperWalls`
+    -- end
 
-    PhysicsService:CollisionGroupSetCollidable(`{playerTeamName}_DropperWalls`, `{playerTeamName}_DroppedAssets`, true)
+    -- PhysicsService:CollisionGroupSetCollidable(`{playerTeamName}_DropperWalls`, `{playerTeamName}_DroppedAssets`, true)
 
     local function Dropper()
 
@@ -72,7 +88,7 @@ function TycoonDropperService.BeginDropper(Player : Player)
                 if #DroppablesFolder:GetChildren() >= 112 then task.wait(.1); continue end
                 local ItemClone : Model = DroppableObjects[Item]:Clone()
                 if not ItemClone or not ItemClone.PrimaryPart then return end
-                ItemClone:PivotTo(DropperPart.CFrame)
+                ItemClone:PivotTo(CFrame.new(RandomPointInPart(DropperPart)))
                 ItemClone.Parent = DroppablesFolder
 
                 ItemClone:SetAttribute("Server", true)
@@ -89,9 +105,9 @@ function TycoonDropperService.BeginDropper(Player : Player)
                 end
                 ItemClone.PrimaryPart.CollisionGroup = `{playerTeamName}_DroppedAssets`
 
-                task.wait(DROPPER_DEBOUNCE_TIME / #sched)
+                task.wait(.125)
             end
-            task.wait(.5)
+            task.wait(DROPPER_DEBOUNCE_TIME)
         end
     end
 
