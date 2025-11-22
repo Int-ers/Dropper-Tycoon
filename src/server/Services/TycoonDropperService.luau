@@ -1,4 +1,5 @@
 local HttpService = game:GetService("HttpService")
+local PhysicsService = game:GetService("PhysicsService")
 -- local PhysicsService = game:GetService("PhysicsService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local DatabaseService = require(script.Parent.DatabaseService)
@@ -66,16 +67,11 @@ function TycoonDropperService.BeginDropper(Player : Player)
     
     local DropperPart = PlayerTycoon.Scriptable__.DropperPart
     local DroppablesFolder = PlayerTycoon:FindFirstChild("TycoonDroppables")
-    -- local DropperWalls = PlayerTycoon.Scriptable__:FindFirstChild("DropperWalls")
     local Buttons = PlayerTycoon.Scriptable__.BUTTONS:GetChildren()
 
-    -- PhysicsService:RegisterCollisionGroup(`{playerTeamName}_DropperWalls`)
-    -- PhysicsService:RegisterCollisionGroup(`{playerTeamName}_DroppedAssets`)
-    -- for _,part : BasePart in DropperWalls:GetChildren() do
-    --     part.CollisionGroup = `{playerTeamName}_DropperWalls`
-    -- end
-
-    -- PhysicsService:CollisionGroupSetCollidable(`{playerTeamName}_DropperWalls`, `{playerTeamName}_DroppedAssets`, true)
+    PhysicsService:RegisterCollisionGroup(`{Player.Team.Name}_DropperWalls`)
+    PhysicsService:RegisterCollisionGroup(`{Player.Team.Name}_Droppables`)
+    PhysicsService:CollisionGroupSetCollidable(`{Player.Team.Name}_DropperWalls`, `{Player.Team.Name}_Droppables`, true)
 
     local function Dropper()
 

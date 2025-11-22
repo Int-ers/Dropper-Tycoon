@@ -10,6 +10,8 @@ local Tycoons = Workspace:WaitForChild("Tycoons")
 local SellingEvent = Net:RemoteEvent("SellingEvent")
 local SellingUI = Net:RemoteEvent("Update_SellingUI")
 
+local InventoryUpdated = Net:RemoteEvent("InventoryUpdate_Remote")
+
 function SetCash(player, value)
     local leaderstats = player:FindFirstChild("leaderstats")
     if leaderstats then
@@ -70,6 +72,8 @@ function SellingService.AddToSellCycle(Player : Player)
         PlayerData.PlayerInventory[name] = nil
     end
 
+    InventoryUpdated:FireClient(Player, PlayerData.PlayerInventory)
+
 end
 
 function SellingService.StartSellCycle(Player : Player)
@@ -117,7 +121,11 @@ function SellingService:AddItemToInventory(Player : Player, ObjName) : boolean
     PlayerData.PlayerInventory[ObjName] += 1
     if PlayerData.Gamepasses["Auto Sell"] then
         SellingService.AddToSellCycle(Player)
+        return true
     end
+
+    InventoryUpdated:FireClient(Player, PlayerData.PlayerInventory)
+
     return true
 end
 

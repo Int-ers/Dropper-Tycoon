@@ -5,7 +5,7 @@ return {
     ["Epic Duck Racer"] = 50,
     ["Grotesque Pile of One Hundred Thousand Eyeballs"] = 100,
     ["The Reaper's Claw"] = 150,
-    ["Blue Hat of the Orient"] = 999999999,
+    ["Blue Hat of the Orient"] = 200,
     ["Aluminum Recycled Bowler"] = 250,
     ["Silver King of the Night"] = 300,
     ["Black Iron King of the Night"] = 450,

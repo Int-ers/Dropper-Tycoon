@@ -10,6 +10,7 @@ local TycoonDropperService = require(ServerScriptService["Main Server"].Services
 
 local TutorialRemote = Net:RemoteEvent("Initiate_Tutorial")
 local TutorialCompletion = Net:RemoteEvent("Completed_Tutorial")
+local InventoryUpdated = Net:RemoteEvent("InventoryUpdate_Remote")
 
 local PlayerJoinController = {}
 
@@ -76,6 +77,7 @@ function PlayerJoinController.PlayerJoined(Player : Player)
         Player:Kick("Some error with your data, please rejoin!")
         return
     end
+    print(PlayerData)
 
     CreateLeaderstats(Player, PlayerData)
     Player:LoadCharacter()
@@ -100,6 +102,8 @@ function PlayerJoinController.PlayerJoined(Player : Player)
     end
     TycoonDropperService.BeginDropper(Player)
     SellingService.StartSellCycle(Player)
+
+    InventoryUpdated:FireClient(Player, PlayerData.PlayerInventory)
 end
 
 function PlayerJoinController.CompletedTutorial(Player : Player)

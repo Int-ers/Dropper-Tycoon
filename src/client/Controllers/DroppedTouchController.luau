@@ -1,5 +1,6 @@
 local CollectionService = game:GetService("CollectionService")
 local Debris = game:GetService("Debris")
+local PhysicsService = game:GetService("PhysicsService")
 local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -15,7 +16,6 @@ local ClientAudioBridge = require(ReplicatedStorage["Main Client"].Bridges.Clien
 local janitor = Janitor.new()
 
 local ItemCache = {
-
 
 } :: {[string] : Model}
 
@@ -38,13 +38,8 @@ function CreateDuplicate(Name, ID, Position : CFrame) : Model?
     Clone:SetAttribute("Client", true)
 
     Clone.PrimaryPart:PivotTo(Position)
+    Clone.PrimaryPart.CollisionGroup = `{Player.Team.Name}_Droppables`
 
-    -- local function anchorOnceStopped()
-    --     repeat task.wait(2) until Clone.PrimaryPart.AssemblyLinearVelocity.Magnitude > 0.5
-    --     Clone.PrimaryPart.Anchored = true
-    -- end
-
-    -- janitor:Add(task.spawn(anchorOnceStopped))
 
     return Clone
 
@@ -64,6 +59,10 @@ function DroppedTouchController.OnStart()
     local DroppedParts = CollectionService:GetTagged(`{Player.Team.Name}_DroppedAssets`)
     local PlayerTycoon = Tycoons:FindFirstChild(Player.Team.Name)
     if not PlayerTycoon then warn("No tycoon found"); else DropperWalls = PlayerTycoon.Scriptable__:FindFirstChild("DropperWalls") end
+
+    for _,part : BasePart in DropperWalls:GetChildren() do
+        part.CollisionGroup = `{Player.Team.Name}_DropperWalls`
+    end
     
     for _, part : Model in DroppedParts do
         local timeout = 0
