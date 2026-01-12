@@ -11,7 +11,7 @@ local DroppableObjects = FolderObjects:WaitForChild("DropperObjects")
 local janitor = Janitor.new()
 
 local DROPPER_DEBOUNCE_TIME = 5
-local MAX_DROPPED_ITEMS = 1000
+local MAX_DROPPED_ITEMS = 112
 
 local function RandomPointInPart(part: BasePart)
     local size = part.Size
