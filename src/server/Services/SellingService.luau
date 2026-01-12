@@ -78,7 +78,6 @@ end
 
 function SellingService.StartSellCycle(Player : Player)
 
-    
     local PlayerData = DatabaseService.GetPlayerData(Player)
     if not PlayerData then return end 
 

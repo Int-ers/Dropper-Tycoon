@@ -11,6 +11,7 @@ local DroppableObjects = FolderObjects:WaitForChild("DropperObjects")
 local janitor = Janitor.new()
 
 local DROPPER_DEBOUNCE_TIME = 5
+local MAX_DROPPED_ITEMS = 1000
 
 local function RandomPointInPart(part: BasePart)
     local size = part.Size
@@ -26,9 +27,6 @@ local function RandomPointInPart(part: BasePart)
     -- convert offset to world space using CFrame
     return part.CFrame:PointToWorldSpace(offset)
 end
-
-
-
 
 local TycoonDropperService = {
     PlayersDropSchedule = {} :: {[Player] : {string}}
@@ -81,7 +79,7 @@ function TycoonDropperService.BeginDropper(Player : Player)
                 if not DroppableObjects:FindFirstChild(Item) then
                     continue
                 end
-                if #DroppablesFolder:GetChildren() >= 112 then task.wait(.1); continue end
+                if #DroppablesFolder:GetChildren() >= MAX_DROPPED_ITEMS then task.wait(.1); continue end
                 local ItemClone : Model = DroppableObjects[Item]:Clone()
                 if not ItemClone or not ItemClone.PrimaryPart then return end
                 ItemClone:PivotTo(CFrame.new(RandomPointInPart(DropperPart)))
